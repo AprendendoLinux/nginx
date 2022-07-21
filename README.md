@@ -16,4 +16,4 @@ docker run -d --name='nginx' \
 --restart=always aprendendolinux/nginx:latest
 ~~~
 
-Use também o [docker-compose.yml]([https://#](https://github.com/AprendendoLinux/nginx/blob/main/docker-compose.yml)).
+Use também o [docker-compose.yml](https://github.com/AprendendoLinux/nginx/blob/main/docker-compose.yml).
