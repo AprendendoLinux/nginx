@@ -6,6 +6,8 @@
 docker volume create nginx
 ~~~
 
+<h3>Subindo o contêiner: </h3>
+
 ~~~bash
 docker run -d --name='nginx' \
      --hostname='nginx' \
