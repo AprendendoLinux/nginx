@@ -6,8 +6,6 @@
 docker volume create nginx
 ~~~
 
-<h3>Subindo o contêiner do banco de dados (necessário para o GLPI funcionar):</h3>
-
 ~~~bash
 docker run -d --name='nginx' \
      --hostname='nginx' \
