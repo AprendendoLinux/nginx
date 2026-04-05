@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navegador de Arquivos</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --container-bg: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #888888;
+            --accent: #4fc3f7;
+            --border-color: #2c2c2c;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .main-container {
+            flex: 1;
+            width: 90%;
+            max-width: 1000px;
+            margin: 50px auto;
+            background-color: var(--container-bg);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            border: 1px solid var(--border-color);
+            box-sizing: border-box;
+        }
+
+        .header-section {
+            margin-bottom: 35px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 25px;
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 8px;
+            outline: none;
+        }
+
+        .brand-icon {
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        h1.page-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-main);
+            transition: text-decoration 0.2s;
+        }
+
+        .brand-link:hover h1.page-title {
+            text-decoration: underline;
+        }
+
+        p.page-subtitle {
+            margin: 0;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            padding-left: 39px;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 14px 18px;
+            margin-bottom: 25px;
+            background-color: #181818;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        #searchInput:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(79, 195, 247, 0.15);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 15px 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        th a:hover {
+            color: var(--text-main);
+        }
+
+        td {
+            padding: 16px 10px;
+            border-bottom: 1px solid #252525;
+            font-size: 0.95rem;
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        td.link a {
+            color: var(--text-main);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: color 0.2s;
+        }
+
+        td.link a:hover {
+            color: var(--accent);
+        }
+
+        .icon {
+            margin-right: 12px;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        .parent-row a {
+            color: var(--text-muted) !important;
+            font-weight: 500;
+        }
+        
+        .parent-row a:hover {
+            color: var(--text-main) !important;
+        }
+
+        td.size, td.date {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* --- REGRAS DE RESPONSIVIDADE (MOBILE) --- */
+        @media (max-width: 768px) {
+            .main-container {
+                width: 95%;
+                margin: 20px auto;
+                padding: 20px;
+            }
+
+            .header-section {
+                margin-bottom: 20px;
+                padding-bottom: 15px;
+            }
+
+            h1.page-title {
+                font-size: 1.4rem;
+            }
+
+            p.page-subtitle {
+                font-size: 0.85rem;
+            }
+
+            .brand-link {
+                gap: 10px;
+            }
+
+            p.page-subtitle {
+                padding-left: 34px; /* Ajuste acompanhando o gap reduzido do ícone */
+            }
+
+            /* Torna a tabela rolável na horizontal */
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            th, td {
+                padding: 12px 10px;
+            }
+
+            .icon {
+                margin-right: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header-section">
+            <a href="/" class="brand-link" title="Voltar para a Raiz">
+                <svg class="brand-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+                <h1 class="page-title">Navegador de Arquivos</h1>
+            </a>
+            <p class="page-subtitle">Explore e gerencie seus diretórios</p>
+        </div>
+        
+        <input type="text" id="searchInput" onkeyup="filterFiles()" placeholder="Buscar arquivos...">
+
+        <script>
+        function filterFiles() {
+            var input = document.getElementById("searchInput");
+            var filter = input.value.toUpperCase();
+            var table = document.querySelector("table");
+            if(!table) return;
+            var tr = table.getElementsByTagName("tr");
+            
+            for (var i = 1; i < tr.length; i++) {
+                var td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    var txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const folderIcon = `<svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>`;
+            const fileIcon = `<svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>`;
+            const backIcon = `<svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>`;
+            const arrowUp = `<svg class="sort-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>`;
+            const arrowDown = `<svg class="sort-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>`;
+
+            const table = document.querySelector("table");
+            if (!table) return;
+            const tbody = table.querySelector("tbody") || table;
+            const ths = table.querySelectorAll("th");
+            let currentSort = { col: -1, dir: 'asc' };
+
+            document.querySelectorAll("td.link a").forEach(link => {
+                let text = link.textContent;
+                
+                if (text === "Parent directory/" || text === "Parent directory") {
+                    link.innerHTML = backIcon + "Voltar";
+                    let tr = link.closest("tr");
+                    if (tr) {
+                        tr.classList.add("parent-row");
+                        let sizeTd = tr.querySelector("td.size");
+                        let dateTd = tr.querySelector("td.date");
+                        if (sizeTd) sizeTd.innerHTML = "";
+                        if (dateTd) dateTd.innerHTML = "";
+                    }
+                } else if (text.endsWith('/')) {
+                    link.innerHTML = folderIcon + text.slice(0, -1);
+                } else {
+                    link.innerHTML = fileIcon + text;
+                }
+            });
+
+            ths.forEach((th, index) => {
+                let link = th.querySelector("a");
+                if(link) {
+                    let name = link.textContent;
+                    if(name.includes("File Name")) name = "Nome";
+                    if(name.includes("File Size")) name = "Tamanho";
+                    if(name.includes("Date")) name = "Data";
+                    
+                    th.innerHTML = `<a href="#" style="display:inline-flex; align-items:center; gap:5px; width:100%; outline:none;">${name} <span class="arrow-container"></span></a>`;
+                    th.querySelector("a").addEventListener("click", (e) => {
+                        e.preventDefault();
+                        sortTable(index);
+                    });
+                }
+            });
+
+            function sortTable(colIndex) {
+                if (currentSort.col === colIndex) {
+                    currentSort.dir = currentSort.dir === 'asc' ? 'desc' : 'asc';
+                } else {
+                    currentSort.col = colIndex;
+                    currentSort.dir = 'asc';
+                }
+
+                ths.forEach((th, idx) => {
+                    let container = th.querySelector(".arrow-container");
+                    if (container) {
+                        if (idx === colIndex) {
+                            container.innerHTML = currentSort.dir === 'asc' ? arrowUp : arrowDown;
+                            container.style.color = "var(--accent)";
+                        } else {
+                            container.innerHTML = "";
+                        }
+                    }
+                });
+
+                let rows = Array.from(table.querySelectorAll("tr")).slice(1);
+                
+                let parentRow = null;
+                const parentIndex = rows.findIndex(r => r.classList.contains("parent-row"));
+                if (parentIndex > -1) {
+                    parentRow = rows.splice(parentIndex, 1)[0];
+                }
+
+                rows.sort((a, b) => {
+                    let valA = a.cells[colIndex].textContent.trim();
+                    let valB = b.cells[colIndex].textContent.trim();
+
+                    if (colIndex === 0) {
+                        valA = valA.toLowerCase();
+                        valB = valB.toLowerCase();
+                    } else if (colIndex === 1) {
+                        valA = parseSize(valA);
+                        valB = parseSize(valB);
+                    } else if (colIndex === 2) {
+                        valA = parseDate(valA);
+                        valB = parseDate(valB);
+                    }
+
+                    if (valA < valB) return currentSort.dir === 'asc' ? -1 : 1;
+                    if (valA > valB) return currentSort.dir === 'asc' ? 1 : -1;
+                    return 0;
+                });
+
+                if (parentRow) tbody.appendChild(parentRow);
+                rows.forEach(r => tbody.appendChild(r));
+            }
+
+            function parseSize(str) {
+                if (str === '-' || !str) return -1;
+                const match = str.match(/^([\d.]+)\s*([A-Za-z]?)$/);
+                if (!match) return 0;
+                const val = parseFloat(match[1]);
+                const unit = match[2].toUpperCase();
+                const units = { 'K': 1024, 'M': 1024**2, 'G': 1024**3, 'T': 1024**4 };
+                return units[unit] ? val * units[unit] : val;
+            }
+
+            function parseDate(str) {
+                if (str === '-' || !str) return 0;
+                const parts = str.match(/(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2})/);
+                if (!parts) return 0;
+                return new Date(parts[3], parts[2] - 1, parts[1], parts[4], parts[5]).getTime();
+            }
+
+            sortTable(0);
+        });
+        </script>
