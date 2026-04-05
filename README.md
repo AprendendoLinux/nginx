@@ -41,7 +41,7 @@ Certifique-se de ter o [Docker](https://docs.docker.com/get-docker/) e o [Docker
 
 1. **Clone o repositório:**
    ```bash
-   git clone [https://github.com/AprendendoLinux/nginx.git](https://github.com/AprendendoLinux/nginx.git)
+   git clone https://github.com/AprendendoLinux/nginx.git
    cd nginx
    ```
 
