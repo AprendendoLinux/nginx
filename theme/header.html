@@ -170,7 +170,6 @@
             font-size: 0.85rem;
         }
 
-        /* --- REGRAS DE RESPONSIVIDADE (MOBILE) --- */
         @media (max-width: 768px) {
             .main-container {
                 width: 95%;
@@ -196,10 +195,9 @@
             }
 
             p.page-subtitle {
-                padding-left: 34px; /* Ajuste acompanhando o gap reduzido do ícone */
+                padding-left: 34px; 
             }
 
-            /* Torna a tabela rolável na horizontal */
             table {
                 display: block;
                 overflow-x: auto;
@@ -335,6 +333,7 @@
                         valA = valA.toLowerCase();
                         valB = valB.toLowerCase();
                     } else if (colIndex === 1) {
+                        // Função de Tamanho Atualizada
                         valA = parseSize(valA);
                         valB = parseSize(valB);
                     } else if (colIndex === 2) {
@@ -351,14 +350,25 @@
                 rows.forEach(r => tbody.appendChild(r));
             }
 
+            // NOVA LÓGICA DE TAMANHO (Robusta)
             function parseSize(str) {
-                if (str === '-' || !str) return -1;
-                const match = str.match(/^([\d.]+)\s*([A-Za-z]?)$/);
-                if (!match) return 0;
-                const val = parseFloat(match[1]);
-                const unit = match[2].toUpperCase();
-                const units = { 'K': 1024, 'M': 1024**2, 'G': 1024**3, 'T': 1024**4 };
-                return units[unit] ? val * units[unit] : val;
+                str = str.trim().toUpperCase();
+                // O Nginx costuma usar hífens para representar o tamanho de pastas e diretórios
+                if (str === '-' || str === '') return -1;
+                
+                // Remove tudo que não for número, ponto ou vírgula. Transforma vírgula em ponto.
+                let numStr = str.replace(/[^\d.,]/g, '').replace(',', '.');
+                let val = parseFloat(numStr);
+                
+                if (isNaN(val)) return 0;
+                
+                // Aplica o multiplicador procurando a letra correspondente em qualquer lugar do texto
+                if (str.includes('K')) return val * 1024;
+                if (str.includes('M')) return val * (1024 ** 2);
+                if (str.includes('G')) return val * (1024 ** 3);
+                if (str.includes('T')) return val * (1024 ** 4);
+                
+                return val; // Arquivos pequenos (apenas bytes)
             }
 
             function parseDate(str) {
